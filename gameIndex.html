@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flappy bird</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="input.css">
+    <style media="screen">
+        canvas {
+            border-radius: 10px;
+        }
+        .Container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            color: white;
+        }
+    </style>
+    <!-- game -->
+    <script src="guagame/utils.js"></script>
+    <script src="guagame/mouse.js"></script>
+    <script src="guagame/gua_game.js"></script>
+    <script src="guagame/gua_scene.js"></script>
+    <script src="guagame/gua_image.js"></script>
+    <script src="guagame/gua_label.js"></script>
+    <script src="guagame/gua_animation.js"></script>
+    <script src="guagame/gua_particle_system.js"></script>
+    <!-- scene -->
+    <script src="scene/main/scene.js"></script>
+    <!-- title scene -->
+    <script src="scene/end/scene_end.js"></script>
+    <script src="scene/begin/scene_start.js"></script>
+    <!-- config -->
+    <script src="scene/config.js"></script>
+</head>
+<body>
+    <div class="Container">
+        <div class="canvas-box Component">
+            <canvas id="id-canvas" width="400" height="600"></canvas>
+        </div>
+        <div class="control-box">
+            <div class="slides gua-controls Component">
+                <label>
+                    <input id="id-input-speed" class="main input-slider" type="range" name="name" value="3"><br>
+                    <div class="input-text-box">Game speed: <span class="gua-label"></span></div>
+                </label>
+            </div>
+            <div class="introduction Component">
+                <img class="introduction-image" src="img/bird/buttons.png">
+            </div>
+        </div>
+    </div>
+<script src="main.js"></script>
+<script>
+    var es = sel => document.querySelectorAll(sel)
+
+    var bindAll = function (sel, eventName, callback) {
+        var l =es(sel)
+        for (var i = 0; i < l.length; i++) {
+            var input = l[i]
+            input.addEventListener(eventName, function (event) {
+                callback(event)
+            })
+        }
+    }
+
+    var templateControl = function(key, item) {
+        var t = `
+            <label>
+                <input class="gua-auto-slider input-slider" type="range"
+                max="300"
+                value="${item.value}"
+                data-value="config.${key}"
+                ><br>
+                <div class="input-text-box">
+                    ${item._comment}： <span class="gua-label"></span>
+                </div>
+            </label>
+        `
+        return t
+    }
+
+    var insertControls = function() {
+        var div = e('.gua-controls')
+        var keys = Object.keys(config)
+        for (var k of keys) {
+            var item = config[k]
+            var html = templateControl(k, item)
+            div.insertAdjacentHTML('beforeend', html)
+        }
+    }
+
+    var bindEvents = function() {
+        bindAll('.gua-auto-slider', 'input', function (event) {
+            var target = event.target
+            var bindVar = target.dataset.value
+            var v = target.value
+            eval(bindVar + '.value =' + v)
+            var lable = target.closest('label').querySelector('.gua-label')
+            lable.innerText = v
+        })
+    }
+
+    var _main = function () {
+        insertControls()
+        bindEvents()
+    }
+
+    _main()
+</script>
+</body>
+</html>
